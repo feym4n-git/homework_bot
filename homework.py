@@ -98,7 +98,6 @@ def check_response(response):
         raise KeyError('Ключа "current_date" нет в ответе от эндпоинта')
     if type(response['homeworks']) != list:
         raise TypeError('homeworks type is not a list')
-    
 
 
 def parse_status(homework):
