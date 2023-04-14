@@ -94,7 +94,7 @@ def check_response(response):
     if 'current_date' not in response:
         logger.error('Ключа "current_date" нет в ответе от эндпоинта')
         raise KeyError('Ключа "current_date" нет в ответе от эндпоинта')
-    if not isinstance(response['homeworks'],list):
+    if not isinstance(response['homeworks'], list):
         raise TypeError('homeworks type is not a list')
 
 
