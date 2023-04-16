@@ -1,2 +1,2 @@
-class Send_MessageError(Exception):
+class SendMessageerror(Exception):
     pass

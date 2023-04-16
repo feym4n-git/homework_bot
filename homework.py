@@ -9,7 +9,7 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
-from exception import Send_MessageError
+from exception import SendMessageerror
 
 load_dotenv()
 
@@ -60,7 +60,7 @@ def send_message(bot, message: str) -> None:
         bot.send_message("TELEGRAM_CHAT_ID", message)
         logger.debug(f'Бот отправил сообщение: {message}')
     except telegram.error.BadRequest:
-        raise Send_MessageError('Ошибка BadRequest отправки в Telegram')
+        raise SendMessageerror('Ошибка BadRequest отправки в Telegram')
     except Exception:
         logger.error('Не удалось отправить сообщение в Telegram')
         raise Exception('Ошибка в отправке сообщения')
@@ -81,7 +81,11 @@ def get_api_answer(timestamp):
     if code != HTTPStatus.OK:
         logger.error(f'Эндпоинт недоступен. Код ответа API: {code}')
         raise Exception(f'Эндпоинт недоступен. Код ответа API: {code}')
-    return homework_statuses.json()
+    try:
+        return homework_statuses.json()
+    except Exception:
+        logger.error('Не удалось вернуть ответ в формате JSON')
+        raise Exception('Не удалось вернуть ответ в формате JSON')
 
 
 def check_response(response):
@@ -115,8 +119,7 @@ def main():
     logger.debug('Начата работа программы')
     check_tokens()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    timestamp = 1678667054
-    # timestamp = int(time.time())
+    timestamp = int(time.time())
     while True:
         try:
             answer = get_api_answer(timestamp)
@@ -128,7 +131,7 @@ def main():
             else:
                 logger.debug('Нет измений в статусах работ')
             timestamp = answer['current_date']
-        except Send_MessageError:
+        except SendMessageerror:
             logger.error('Не удалось отправить сообщение в Telegram')
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
